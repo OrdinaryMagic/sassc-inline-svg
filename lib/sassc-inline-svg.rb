@@ -6,11 +6,11 @@ require 'cgi'
 
 module SassC::InlineSVG
   module Functions
-    def svg_data_url(path)
+    def inline_svg(path, options = {})
       sprockets_context.depend_on_asset(path.value)
       svg = read_file(path.value.strip)
+      options.each_pair { |k, v| svg.gsub!(k.value, v.value) if svg.include? k.value }
       SassC::Script::Value::String.new(encoded_url(svg))
-
     end
 
     private
