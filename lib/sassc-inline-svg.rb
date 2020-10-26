@@ -1,7 +1,7 @@
 # encoding: UTF-8
 # frozen_string_literal: true
 
-require 'sassc-rails'
+require 'sassc'
 require 'cgi'
 
 module SassC::InlineSVG
@@ -15,16 +15,18 @@ module SassC::InlineSVG
     private
 
     def read_file(path)
-      if defined?(Rails) && Rails.application
-        source = Rails.application.assets || ::Sprockets::Railtie.build_environment(Rails.application)
-        asset = source.find_asset(path)
-        raise "File not found or cannot be read (Sprockets): #{path}" if asset.nil?
+      return find_rails_asset(path) if defined?(Rails) && Rails.application
 
-        return asset.to_s
-      end
       raise SassC::SyntaxError, "File not found or cannot be read (native): #{path}" unless File.readable?(path)
 
       File.open(path, 'rb') { |f| f.read }.strip
+    end
+
+    def find_rails_asset(path)
+      source = Rails.application.assets || ::Sprockets::Railtie.build_environment(Rails.application)
+      asset = source.find_asset(path)
+      raise "File not found or cannot be read (Sprockets): #{path}" if asset.nil?
+      asset.to_s
     end
 
     def replace_options(svg, options)
