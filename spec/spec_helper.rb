@@ -3,6 +3,7 @@
 
 require 'bundler/setup'
 require 'sassc-inline-svg'
+
 require 'simplecov'
 SimpleCov.start
 
