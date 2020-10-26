@@ -22,7 +22,7 @@ module SassC::InlineSVG
     def read_file(path)
       if defined?(Rails) && Rails.application
         source = Rails.application.assets || ::Sprockets::Railtie.build_environment(Rails.application)
-        asset = source.find_asset(path).to_s
+        asset = source.find_asset(path)
         raise "File not found or cannot be read (Sprockets): #{path}" if asset.nil?
 
         return asset.to_s
