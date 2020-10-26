@@ -7,21 +7,21 @@ require 'cgi'
 module SassC::InlineSVG
   module Functions
     def inline_svg(path, options = nil)
-      sprockets_context.depend_on_asset(path.value)
+      # sprockets_context.depend_on_asset(path.value)
       svg = read_file(path.value.strip)
       options.value.each_pair { |k, v| svg.gsub!(k.value, v.value) if svg.include?(k.value) } unless options.nil?
-      SassC::Script::Value::String.new(encoded_url(svg))
+      SassC::Script::Value::String.new(encode_url(svg))
     end
 
     private
 
-    def encoded_url(svg)
+    def encode_url(svg)
       encoded = CGI::escape(svg).gsub("+", "%20")
       "url('data:image/svg+xml;charset=utf-8," + encoded + "')"
     end
 
     def read_file(path)
-      if defined?(Rails)
+      if defined?(Rails) && Rails.application
         asset = (Rails.application.assets || ::Sprockets::Railtie.build_environment(Rails.application)).find_asset(path).to_s
         raise "File not found or cannot be read (Sprockets): #{path}" if asset.nil?
 
