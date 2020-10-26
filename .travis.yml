@@ -3,7 +3,7 @@ env:
     - CC_TEST_REPORTER_ID=91cbbc09da385c121252eaa16660d01c14c02f5c09f179e03415f4b75eda0361
 language: ruby
 rvm:
-  - 2.4.2
+  - 2.6.5
 before_install: gem install bundler
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
