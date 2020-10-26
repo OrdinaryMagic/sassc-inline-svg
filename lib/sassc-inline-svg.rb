@@ -8,16 +8,11 @@ module SassC::InlineSVG
   module Functions
     def inline_svg(path, options = nil)
       svg = read_file(path.value.strip)
-      options.value.each_pair { |k, v| svg.gsub!(k.value, v.value) if svg.include?(k.value) } unless options.nil?
+      svg = replace_options(svg, options)
       SassC::Script::Value::String.new(encode_url(svg))
     end
 
     private
-
-    def encode_url(svg)
-      encoded = CGI::escape(svg).gsub("+", "%20")
-      "url('data:image/svg+xml;charset=utf-8," + encoded + "')"
-    end
 
     def read_file(path)
       if defined?(Rails) && Rails.application
@@ -30,6 +25,20 @@ module SassC::InlineSVG
       raise SassC::SyntaxError, "File not found or cannot be read (native): #{path}" unless File.readable?(path)
 
       File.open(path, 'rb') { |f| f.read }.strip
+    end
+
+    def replace_options(svg, options)
+      return svg if options.nil?
+
+      options.value.each_pair do |k, v|
+        svg.gsub!(k.value, v.value) if svg.include?(k.value)
+      end
+      svg
+    end
+
+    def encode_url(svg)
+      encoded = CGI::escape(svg).gsub("+", "%20")
+      "url('data:image/svg+xml;charset=utf-8," + encoded + "')"
     end
   end
 end
