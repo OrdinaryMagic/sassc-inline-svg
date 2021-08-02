@@ -15,6 +15,9 @@ Gem::Specification.new do |s|
 
   s.files           = `git ls-files -z`.split("\x0")
   s.test_files      = `git ls-files -z -- {test,spec,features}/*`.split("\x0")
+
+  s.required_ruby_version = ">= 2.0.0"
+
   s.require_paths   = ['lib']
 
   s.add_dependency 'sassc', '~> 2.0'
